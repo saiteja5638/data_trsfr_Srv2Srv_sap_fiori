@@ -7,6 +7,7 @@ sap.ui.define([
     function (Controller) {
         "use strict";
         var that;
+        
         return Controller.extend("project1.controller.View1", {
             onInit: function () {
                 that =this;
@@ -51,25 +52,26 @@ sap.ui.define([
             },
             push_data:function()
             {
-                let table = that.byId("table")
-                let selected_path = table.getSelectedItems()[0].getCells()[0].getText()
-                     
-                switch(selected_path)
+                let table = that.byId("table").getSelectedItems()
+               
+
+                for(let a=0;a<table.length;a++)
                 {
-                    case "LOCATION  EXTRACT":that.location_push();
-                          break  
-                        
+                    let selected_path = table[a].getCells()[0].getText()
+
+                    switch(selected_path)
+                    {
+                        case "LOCATION  EXTRACT":that.location_push();
+                              break  
+                         case "CUSTOMER":that.customer_extract();
+                                break  
+                    }
                 }
 
-                function call()
-                {
-                    console.log("hi how  are u ")
-                }
-                  
             },
-            location_push:function()
+            location_push:function()   // location _stab -location 
             {
-                var oData = that.getOwnerComponent().getModel()
+               var  oData = that.getOwnerComponent().getModel()
 
                 create()
 
@@ -98,7 +100,7 @@ sap.ui.define([
                             var dataObject = data[i]
                                 // batch request operation
                             oData.createEntry("/LOCATION_IBP", {
-                                properties: { LOCATION_ID: dataObject.LOCATION_ID },
+                                properties: dataObject,
                             });
 
                         }
@@ -139,6 +141,70 @@ sap.ui.define([
                     }
                 })
                 }
+            },
+            customer_extract:function()
+            { 
+               var oData = that.getOwnerComponent().getModel()
+               create()
+               function read()
+               {
+                 return new Promise((resolve, reject) => {
+                    oData.read("/SALES_HISTORY",{
+                        success:function(res)
+                        {
+                            resolve(res.results)
+                        },
+                        error:function(err)
+                        {
+                            reject(err)
+                        }
+                    })
+                 })
+               }
+              
+               function create()
+               {
+                read()
+
+                .then((data)=>{
+                    data.forEach(element => {
+                        oData.createEntry("/SALES_HISTORY_STB",{
+                            properties:element
+                        })
+                    });
+
+                    oData.submitChanges({
+                        success:function(o)
+                        {
+                            console.log(o)
+                            delete1()
+                        },
+                        error:function(error)
+                        {
+                            console.log(error)
+                        }
+                    })
+                })
+               }
+
+               function delete1()
+               {
+                  read()
+                  .then((data)=>{
+                    oData.remove("/SALES_HISTORY_STB",
+                    {
+                        success:function(res)
+                        {
+                            console.log(res)
+                        },
+                        error:function(error)
+                        {
+                            console.log(error)
+                        }
+                    })
+                  })
+               }
+
             }
         });
     });
