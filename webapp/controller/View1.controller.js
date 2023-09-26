@@ -45,7 +45,33 @@ sap.ui.define([
                     items:data
                 })
                 that.byId("table").setModel(options)
+
+
+                // create()
+            },
+            push_data:function()
+            {
+                let table = that.byId("table")
+                let selected_path = table.getSelectedItems()[0].getCells()[0].getText()
+                     
+                switch(selected_path)
+                {
+                    case "LOCATION  EXTRACT":that.location_push();
+                          break  
+                        
+                }
+
+                function call()
+                {
+                    console.log("hi how  are u ")
+                }
+                  
+            },
+            location_push:function()
+            {
                 var oData = that.getOwnerComponent().getModel()
+
+                create()
 
                 function read()
                 {
@@ -113,8 +139,6 @@ sap.ui.define([
                     }
                 })
                 }
-
-                // create()
             }
         });
     });

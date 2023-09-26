@@ -1,11 +1,11 @@
-<mvc:View controllerName="project1.controller.View1"
+<mvc:View xmlns:tnt="sap.tnt" controllerName="project1.controller.View1"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-     <Table  id="table" mode="MultiSelect"  items="{/items}" >
+    <Page id="page" title="{i18n>title}"  showHeader="false" >
+     <Table  id="table" mode="MultiSelect"  items="{/items}"   >
      <columns>
      <Column id="_IDGenColumn1"   >
-     <Text id="_IDGenText2"  text="opnnion" visible="false" ></Text>
+     <Text id="_IDGenText2"  text="Master Data"  ></Text>
      </Column>
      </columns>
       <items>
@@ -14,5 +14,11 @@
       </ColumnListItem>
       </items>
      </Table>  
+     <footer>
+     <tnt:ToolHeader id="_IDGenToolHeader1" >
+     <ToolbarSpacer id="_IDGenToolbarSpacer1" ></ToolbarSpacer>
+     <Button id="_IDGenButton1"  text="push" press="push_data"  ></Button>
+     </tnt:ToolHeader>
+     </footer>
     </Page>
 </mvc:View>
