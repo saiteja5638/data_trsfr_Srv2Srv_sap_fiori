@@ -2,6 +2,17 @@
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}">
-        <content />
+     <Table  id="table" mode="MultiSelect"  items="{/items}" >
+     <columns>
+     <Column id="_IDGenColumn1"   >
+     <Text id="_IDGenText2"  text="opnnion" visible="false" ></Text>
+     </Column>
+     </columns>
+      <items>
+      <ColumnListItem id="_IDGenColumnListItem1" >
+      <Text id="_IDGenText1"   text="{name}" ></Text>
+      </ColumnListItem>
+      </items>
+     </Table>  
     </Page>
 </mvc:View>

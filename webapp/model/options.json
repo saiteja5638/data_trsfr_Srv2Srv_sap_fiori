@@ -1,0 +1,31 @@
+{
+    "items": [
+        {
+            "name": "LOCATION  EXTRACT"
+        },
+        {
+            "name": "CUSTOMER"
+        },
+        {
+            "name": "PRODUCT"
+        },
+        {
+            "name": "MAINTAIN MRP"
+        },
+        {
+            "name": "BILL OF MATERIALS EXTRACT"
+        },
+        {
+            "name": "PARTIAL PRODUCTS EXTRACT"
+        },
+        {
+            "name": "IIFE"
+        },
+        {
+            "name": "DERVIED CHARACTERISTCS"
+        },
+        {
+            "name": "SALES ORDERS"
+        }
+    ]
+}

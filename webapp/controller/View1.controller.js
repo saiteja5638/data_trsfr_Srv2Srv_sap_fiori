@@ -10,6 +10,41 @@ sap.ui.define([
         return Controller.extend("project1.controller.View1", {
             onInit: function () {
                 that =this;
+                
+                let data = [
+                    {
+                        name: "LOCATION  EXTRACT"
+                    },
+                    {
+                        name: "CUSTOMER"
+                    }, {
+                        name: "PRODUCT"
+                    },
+                    {
+                        name: "MAINTAIN MRP"
+                    },
+                    {
+                        name:"BILL OF MATERIALS EXTRACT"
+                    },
+                    {
+                        name:"PARTIAL PRODUCTS EXTRACT"
+                    },
+                    {
+                        name:"IIFE"
+                    },
+                    {
+                        name:"DERVIED CHARACTERISTCS"
+                    },
+                    {
+                        name:"SALES ORDERS"
+                    }
+                ]
+
+                let options = new sap.ui.model.json.JSONModel()
+                options.setData({
+                    items:data
+                })
+                that.byId("table").setModel(options)
                 var oData = that.getOwnerComponent().getModel()
 
                 function read()
@@ -46,7 +81,7 @@ sap.ui.define([
                             success: function (oData1) {
                                 // Handle successful batch request
                                 console.log("Batch request successful:", oData1);
-                                // delete1()
+                                delete1()
                             },
                             error: function (oError) {
                                 // Handle error in batch request
@@ -79,9 +114,7 @@ sap.ui.define([
                 })
                 }
 
-                // delete1()
-
-                create()
+                // create()
             }
         });
     });
