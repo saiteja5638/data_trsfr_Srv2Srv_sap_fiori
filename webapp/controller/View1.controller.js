@@ -61,15 +61,17 @@ sap.ui.define([
 
                     switch(selected_path)
                     {
-                        case "LOCATION  EXTRACT":that.location_push();
+                        case "LOCATION  EXTRACT":that.location_extract();
                               break  
-                         case "CUSTOMER":that.customer_extract();
+                        case "CUSTOMER":that.customer_extract();
                                 break  
+                        case "SALES ORDERS":that.sales_extract();
+                              break         
                     }
                 }
 
             },
-            location_push:function()   // location _stab -location 
+            location_extract:function()   // location _stab -location 
             {
                var  oData = that.getOwnerComponent().getModel()
 
@@ -204,6 +206,76 @@ sap.ui.define([
                     })
                   })
                }
+
+            },
+            sales_extract:function()
+            {
+                let oData = that.getOwnerComponent().getModel()
+
+                oData.setDeferredGroups(["batchget"]);
+                oData.read("/LOCATION_IBP", {
+                    groupId: "batchget",
+                    changeSetId: "batchget",
+                    success: function (oEvent) {
+
+                    },
+                    error: function (oError) {
+
+                    }
+                });
+                oData.read("/LOCATION", {
+                    groupId: "batchget",
+                    changeSetId: "batchget",
+                    success: function (oEvent) {
+
+                    },
+                    error: function (oError) {
+
+                    }
+                });
+                oData.submitChanges({
+                    groupId: "batchget",
+                    success: function (odata) {
+                       console.log(odata)
+                    },
+                    error: function () {
+                        alert("Error");
+                    }
+                });
+
+
+                // function sales_read()
+                // {
+                //     return new Promise((resolve, reject) => {
+                //         oData.read("/SALES_HISTORY",{
+                //             success:function(response)
+                //             {
+                //                 resolve(response.results)
+                //             },
+                //             error:function(error)
+                //             {
+                //                 reject(error)
+                //             }
+                //         })
+                //     })
+                // }
+
+                // function sales_read()
+                // {
+                //     return new Promise((resolve, reject) => {
+                //         oData.read("/SALES",{
+                //             success:function(response)
+                //             {
+                //                 resolve(response.results)
+                //             },
+                //             error:function(error)
+                //             {
+                //                 reject(error)
+                //             }
+                //         })
+                //     })
+                // }
+
 
             }
         });
