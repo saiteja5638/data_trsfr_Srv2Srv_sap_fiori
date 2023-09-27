@@ -213,7 +213,7 @@ sap.ui.define([
                 let oData = that.getOwnerComponent().getModel()
 
                 oData.setDeferredGroups(["batchget"]);
-                oData.read("/LOCATION_IBP", {
+                oData.read("/SALES_STB", {
                     groupId: "batchget",
                     changeSetId: "batchget",
                     success: function (oEvent) {
@@ -223,7 +223,7 @@ sap.ui.define([
 
                     }
                 });
-                oData.read("/LOCATION", {
+                oData.read("/SALES_HIS_STB", {
                     groupId: "batchget",
                     changeSetId: "batchget",
                     success: function (oEvent) {
