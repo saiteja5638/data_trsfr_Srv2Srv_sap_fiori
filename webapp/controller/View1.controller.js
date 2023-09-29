@@ -204,23 +204,86 @@ sap.ui.define([
             },
             product_extract:function()
             {
+                let oData = that.getOwnerComponent().getModel()
 
+                function prod_read()
+                {
+                    return new Promise((resolve, reject) => {
+                        oData.setDeferredGroups(["batchget1"]);
+                        oData.read("/PRODUCT_STB",
+                         {
+                            groupId: "batchget1",
+                            changeSetId: "batchget1",
+                            success: function () { },
+                            error: function () { }
+                        })
+                        oData.read("/LOC_PRODID_STB", {
+                            groupId: "batchget1",
+                            changeSetId: "batchget1",
+                            success: function () {
+
+                             },
+                            error: function () { }
+                        })
+                        oData.read("/CLASS_C_STB", {
+                            groupId: "batchget1",
+                            changeSetId: "batchget1",
+                            success: function () { },
+                            error: function () { }
+                        })
+                        oData.read("/PROD_CLASS_STB", {
+                            groupId: "batchget1",
+                            changeSetId: "batchget1",
+                            success: function () { },
+                            error: function () { }
+                        })
+                        oData.read("/CHARC_DATA_STB", {
+                            groupId: "batchget1",
+                            changeSetId: "batchget1",
+                            success: function () { },
+                            error: function () { }
+                        })
+                        oData.read("/CHARAC_VALUES_STB", {
+                            groupId: "batchget1",
+                            changeSetId: "batchget1",
+                            success: function () { },
+                            error: function () { }
+                        })
+
+                        oData.submitChanges({
+                            groupId: "batchget1",
+                            success:function(data)
+                            {
+                                resolve(data.__batchResponses)
+                            },
+                            error:function(error)
+                            {
+                                reject(error)
+                            }
+                        })
+                    })
+
+                }
+                 prod_read()   
+                .then((data)=>{
+                    console.log(data)
+                })
             },
             mainmrp_extract:function()
             {
-
+                let oData = that.getOwnerComponent().getModel()
             },
             bom_extract:function()
             {
-
+                let oData = that.getOwnerComponent().getModel()
             },
             part_prod_extract:function()
             {
-
+                let oData = that.getOwnerComponent().getModel()
             },
             dervied_extract:function()
             {
-
+                let oData = that.getOwnerComponent().getModel()
             },
             sales_extract: function () {
                 let oData = that.getOwnerComponent().getModel()
