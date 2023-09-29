@@ -272,10 +272,88 @@ sap.ui.define([
             mainmrp_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
+
+                function read_maintain()
+                {
+                    return new Promise((resolve, reject) => {
+                        oData.read("/MAINT_MRP_STB",{
+                            success:function(response){
+                                resolve(response.results)
+                            },
+                            error:function(error){
+                                reject(error)
+                            }
+                        }) 
+                    })
+                }
+
+                read_maintain()
+
+                .then((data)=>{
+                    console.log(data)
+                })
             },
             bom_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
+                    
+                function bom_read()
+                {
+                   return new Promise((resolve, reject) => {
+                    oData.setDeferredGroups(["bomgroup"])
+                    oData.read("/BOM_STAG_STB ", {
+                        groupId: "bomgroup",
+                        changeSetId: "bomgroup",
+                        success:function(){},
+                        error:function(){}
+                    })
+                    oData.read("/BOM_OBJ_DEPEN_STB", {
+                        groupId: "bomgroup",
+                        changeSetId: "bomgroup",
+                        success:function(){},
+                        error:function(){}
+                    })
+                    oData.read("/ASS_COMP_STB", {
+                        groupId: "bomgroup",
+                        changeSetId: "bomgroup",
+                        success:function(){},
+                        error:function(){}
+                    })
+                    oData.read("/OBJ_DEPEN_MAS_DATA_STB", {
+                        groupId: "bomgroup",
+                        changeSetId: "bomgroup",
+                        success:function(){},
+                        error:function(){}
+                    })
+                    oData.read("/LOC_PRODID_STB", {
+                        groupId: "bomgroup",
+                        changeSetId: "bomgroup",
+                        success:function(){},
+                        error:function(){}
+                    })
+    
+                    oData.submitChanges({
+                        groupId:"bomgroup",
+                        success:function(response)
+                        {
+                            resolve(response.__batchResponses)
+                        },
+                        error:function(error)
+                        {
+                            reject(error)
+                        }
+                    })
+                   })
+                }
+                
+                bom_read()
+
+                .then((data)=>{
+                    console.log(data)
+                })
+
+
+                
             },
             part_prod_extract:function()
             {
