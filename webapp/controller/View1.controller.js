@@ -264,10 +264,103 @@ sap.ui.define([
                     })
 
                 }
-                 prod_read()   
-                .then((data)=>{
-                    console.log(data)
-                })
+
+                function create_prod()
+                {
+                    prod_read()   
+                    .then((data)=>{
+                     
+                        data[0].data.results.forEach(obj => {
+                            oData.createEntry("/PRODUCT", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[1].data.results.forEach(obj => {
+                            oData.createEntry("/LOC_PRODID", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[2].data.results.forEach(obj => {
+                            oData.createEntry("/CLASS_C", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[3].data.results.forEach(obj => {
+                            oData.createEntry("/PROD_CLASS", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[4].data.results.forEach(obj => {
+                            oData.createEntry("/CHARC_DATA", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[5].data.results.forEach(obj => {
+                            oData.createEntry("/CHARAC_VALUES", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+
+                        oData.submitChanges({
+                            success:function(odata)
+                            {
+                               console.log(odata)
+
+                               delete_prod()
+                            }
+                        })
+                    })
+                }
+
+                function delete_prod()
+                {
+                    prod_read()   
+                    .then((data)=>{
+                        data[0].data.results.forEach(obj => {
+                            oData.remove("/PRODUCT_STB/"+obj.PRODUCT_ID, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[1].data.results.forEach(obj => {
+                            oData.remove("/LOC_PRODID_STB/"+obj.LOCATION_ID+"/"+obj.PRODUCT_ID, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[2].data.results.forEach(obj => {
+                            oData.remove("/CLASS_C_STB/"+obj.INT_CLS_NUMBER, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[3].data.results.forEach(obj => {
+                            oData.remove("/PROD_CLASS_STB/"+obj.PRODUCT_ID+"/"+obj.CLASS, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[4].data.results.forEach(obj => {
+                            oData.remove("/CHARC_DATA_STB/"+obj.INT_CLS_NUMBER+"/"+obj.CHAR_NAME, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[5].data.results.forEach(obj => {
+                            oData.remove("/CHARAC_VALUES_STB/"+obj.INT_CHAR+"/"+obj.VALUE_NUM, {
+                                success: function () {},
+                                error: function () {}
+                            })
+                        })
+                    })
+                }
+
             },
             mainmrp_extract:function()
             {
@@ -406,7 +499,7 @@ sap.ui.define([
             dervied_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
-                
+                create_()
                 function dervied_read()
                 {
                     return new Promise((resolve, reject) => {
@@ -423,11 +516,44 @@ sap.ui.define([
                     })
                 }
 
+            function create_()
+            {
                 dervied_read()
 
                 .then((data)=>{
-                    console.log(data)
+                    data.forEach(obj=>{
+                        oData.create("DERIVECHAR",obj,{
+                            success:function(){
+                                sap.m.MessageToast.show("created")
+
+                                delete_obj()
+                            },
+                            error:function(error){}
+                        })
+                    })
+
                 })
+            }
+            function delete_obj()
+            {
+                dervied_read()
+
+                .then((data)=>{
+                    data.forEach(obj=>{
+                        oData.remove("/DERIVECHAR_STB/"+obj.PRODUCT_ID+"/"+obj.RECORD_TYPE+"/"+obj.CLAUSE+"/"+obj.DEP_NAME+"/"+obj.CHAR_NUM+"/"+obj.CHARVAL_NUM+"/"+SORT_COUNTER+"/"+obj.CHAR_COUNTER+"/"+obj.INT_CLS_NUMBER,{
+                            success:function()
+                            {
+                                console.log("success")
+                            },
+                            error:function()
+                            {
+                                console.log("error")
+                            }
+                        })   
+                    })
+                    
+                })
+            }
             },
             sales_extract: function () {
                 let oData = that.getOwnerComponent().getModel()
@@ -476,26 +602,23 @@ sap.ui.define([
                     read_sales()
 
                     .then((data)=>{
-                          
-                        for (let index = 0; index < data[0].data.results.length; index++) {
-                            const element = data[0].data.results[index];
 
+                        data[0].data.results.forEach(obj=>{
+                            
                             oData.createEntry("/SALES", {
-                                properties: element
+                                properties: obj
                             })
+                        })
 
-                        }
-
-                        for (let index1 = 0; index1 < data[1].data.results.length; index1++) {
-                            const element = data[1].data.results[index1];
+                        data[1].data.results.forEach(obj1=>{
                             oData.createEntry("/SALES_HIS", {
-                                properties: element
+                                properties: obj1
                             })
-
-                        }
+                        })
 
                         oData.submitChanges({
                             success: function () {
+                                console.log("created")
                                 delete_mat_mdata()
                             },
                             error: function (error) {
@@ -514,36 +637,35 @@ sap.ui.define([
 
                             let data2 = data[1].data.results
 
-                            for (let aa = 0; aa < data1.length; aa++) {
-
-                                let element = data1[aa]
-
-                                oData.remove("/SALES/" + element.SALES_DOCUMENT + "/" + element.SALES_DOCUMENT_ITEM , {
-                                    success: function () {
-                                        console.log("deleted")
-                                    },
-                                    error: function (error) {
-                                        console.log(error)
-                                    }
-                                })
+                            if(data1.length ==0 || data2.length==0)
+                            {
+                                alert("no data")
                             }
 
+                            else
+                            {
+                                data1.forEach(element=>{
+                                    oData.remove("/SALES_STB/" + element.SALES_DOCUMENT + "/" + element.SALES_DOCUMENT_ITEM , {
+                                        success: function () {
+                                            console.log("deleted")
+                                        },
+                                        error: function (error) {
+                                            console.log(error)
+                                        }
+                                    })
+                                })
 
-                            for (let a = 0; a < data2.length; a++) {
-
-                                const element = data2[a];
-
-                                oData.remove("/SALES_HIS/" + element.SALES_DOCUMENT + "/" + element.SALES_DOCUMENT_ITEM+"/"+element.CHARACTERSTIC, {
-                                    success: function (ee) {
-                                        console.log(ee)
-                                    },
-                                    error: function (re) {
-                                        console.log(re)
-                                    }
+                                data2.forEach(element=>{
+                                    oData.remove("/SALES_HIS_STB/" + element.SALES_DOCUMENT + "/" + element.SALES_DOCUMENT_ITEM+"/"+element.CHARACTERSTIC, {
+                                        success: function (ee) {
+                                            console.log(ee)
+                                        },
+                                        error: function (re) {
+                                            console.log(re)
+                                        }
+                                    })
                                 })
                             }
-
-
                         })
                 }
             },
