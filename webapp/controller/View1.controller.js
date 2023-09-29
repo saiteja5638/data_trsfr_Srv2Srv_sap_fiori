@@ -62,15 +62,15 @@ sap.ui.define([
                             break
                         case "CUSTOMER GROUP EXTRACT": that.customer_extract();
                             break
-                        case "PRODUCT AND ATTRIBUTES EXTRACT": that;
+                        case "PRODUCT AND ATTRIBUTES EXTRACT": that.product_extract();
                             break
-                        case "MAINTAIN MRP": that;
+                        case "MAINTAIN MRP": that.mainmrp_extract();
                             break
-                        case "BILL OF MATERIALS EXTRACT": that
+                        case "BILL OF MATERIALS EXTRACT": that.bom_extract();
                             break
-                        case "PARITIAL PRODUCTS EXTRACT": that;
+                        case "PARITIAL PRODUCTS EXTRACT": that.part_prod_extract();
                             break
-                        case "DERIVED CHARACTERISTICS EXTRACT": that;
+                        case "DERIVED CHARACTERISTICS EXTRACT": that.dervied_extract();
                             break
                         case "SALES ORDER EXTRACT": that.sales_extract();
                             break
@@ -103,14 +103,13 @@ sap.ui.define([
                     read()
 
                         .then((data) => {
-                            for (var i = 0; i < data.length; i++) {
-                                var dataObject = data[i]
+                            data.forEach(obj => {
                                 // batch request operation
                                 oData.createEntry("/LOCATION", {
-                                    properties: dataObject,
+                                    properties: obj,
                                 });
+                            })
 
-                            }
                             oData.submitChanges({
                                 success: function (oData1) {
                                     // Handle successful batch request
@@ -126,11 +125,11 @@ sap.ui.define([
                 }
 
                 function delete1() {
-                    read()
-
-                        .then((data) => {
-                            for (let a = 0; a < data.length; a++) {
-                                let del_obj = data[a].LOCATION_ID
+                    read()  // read call function
+                    .then(((data)=>{
+                        data.forEach(
+                            obj=>{
+                                let del_obj = obj.LOCATION_ID
 
                                 oData.remove('/LOCATION_STB/' + del_obj), {
                                     success: function (da) {
@@ -139,9 +138,10 @@ sap.ui.define([
                                     error: function (error) {
                                         console.log(error)
                                     }
-                                }
+                                } 
                             }
-                        })
+                        )
+                    }))
                 }
             },
             customer_extract: function () {
@@ -185,7 +185,8 @@ sap.ui.define([
                 function delete1() {
                     read()
                         .then((data) => {
-                            oData.remove("/CUSTOMERS_STB",
+                            data.forEach(ele =>{
+                                oData.remove("/CUSTOMERS_STB/"+ele.CUSTOMER_GROUP,
                                 {
                                     success: function (res) {
                                         console.log(res)
@@ -194,8 +195,31 @@ sap.ui.define([
                                         console.log(error)
                                     }
                                 })
+                            })
+                        
+
                         })
                 }
+
+            },
+            product_extract:function()
+            {
+
+            },
+            mainmrp_extract:function()
+            {
+
+            },
+            bom_extract:function()
+            {
+
+            },
+            part_prod_extract:function()
+            {
+
+            },
+            dervied_extract:function()
+            {
 
             },
             sales_extract: function () {
@@ -245,7 +269,6 @@ sap.ui.define([
                     read_sales()
 
                     .then((data)=>{
-                        
                           
                         for (let index = 0; index < data[0].data.results.length; index++) {
                             const element = data[0].data.results[index];
@@ -421,7 +444,6 @@ sap.ui.define([
                         })
                     })
                 }
-
                 function create_ippe()
                 {
                     read_ippe()
