@@ -68,7 +68,7 @@ sap.ui.define([
                             break
                         case "BILL OF MATERIALS EXTRACT": that.bom_extract();
                             break
-                        case "PARITIAL PRODUCTS EXTRACT": that.part_prod_extract();
+                        case "PARTIAL PRODUCTS EXTRACT": that.part_prod_extract();
                             break
                         case "DERIVED CHARACTERISTICS EXTRACT": that.dervied_extract();
                             break
@@ -358,10 +358,76 @@ sap.ui.define([
             part_prod_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
+                
+                function part_prod_read()
+                {
+                    return new Promise((resolve, reject) => {
+                        oData.setDeferredGroups(["part_prod"])
+
+                        oData.read("/PROD_CONF_STB",{
+                            groupId: "part_prod",
+                            changeSetId: "part_prod",
+                            success:function(){},
+                            error:function(){}
+                        })
+                        oData.read("/MAT_LTE_MDATA_STB",{
+                            groupId: "part_prod",
+                            changeSetId: "part_prod",
+                            success:function(){},
+                            error:function(){}
+                        })
+                        oData.read("/LOC_PRODID_STB",{
+                            groupId: "part_prod",
+                            changeSetId: "part_prod",
+                            success:function(){},
+                            error:function(){}
+                        })
+
+                        oData.submitChanges({
+                            success:function(response)
+                            {
+                                resolve(response.__batchResponses)
+                            },
+                            error:function()
+                            {
+                                reject(error)
+                            }
+                        })
+                    })
+                }
+                
+                part_prod_read()
+
+                .then((data)=>{
+                    console.log(data)
+                })
+                
             },
             dervied_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
+                
+                function dervied_read()
+                {
+                    return new Promise((resolve, reject) => {
+                        oData.read("/DERIVECHAR_STB",{
+                            success:function(response)
+                            {
+                               resolve(response.results)
+                            },
+                            error:function()
+                            {
+                                reject(error)
+                            }
+                        })
+                    })
+                }
+
+                dervied_read()
+
+                .then((data)=>{
+                    console.log(data)
+                })
             },
             sales_extract: function () {
                 let oData = that.getOwnerComponent().getModel()
