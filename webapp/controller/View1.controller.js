@@ -205,7 +205,7 @@ sap.ui.define([
             product_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
-
+                create_prod()
                 function prod_read()
                 {
                     return new Promise((resolve, reject) => {
@@ -365,7 +365,7 @@ sap.ui.define([
             mainmrp_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
-
+                create_main()
                 function read_maintain()
                 {
                     return new Promise((resolve, reject) => {
@@ -380,16 +380,40 @@ sap.ui.define([
                     })
                 }
 
-                read_maintain()
+                function create_main()
+                {
 
-                .then((data)=>{
-                    console.log(data)
-                })
+                    read_maintain()
+
+                    .then((data)=>{
+                        data.forEach(obj=>[
+                            oData.create("/MAINT_MRP",{
+                                success:function(){delete_()},
+                                error:function(){}
+                            })
+                        ])
+                    })
+                }
+
+                function delete_()
+                {
+                    read_maintain()
+
+                    .then((data)=>{
+                        data.forEach(obj=>{
+                            oData.remove("/MAINT_MRP_STB/"+obj.LOCATION_ID+"/"+obj.MRP_GROUP,{
+                                success:function(){},
+                                error:function(){}
+                            })
+                        })
+                    })
+                }
+
             },
             bom_extract:function()
             {
                 let oData = that.getOwnerComponent().getModel()
-                    
+                create_bom()  
                 function bom_read()
                 {
                    return new Promise((resolve, reject) => {
@@ -438,14 +462,90 @@ sap.ui.define([
                     })
                    })
                 }
-                
-                bom_read()
 
-                .then((data)=>{
-                    console.log(data)
-                })
+                function create_bom()
+                {
+                    bom_read()
 
+                    .then((data)=>{
+                                            
+                        data[0].data.results.forEach(obj => {
+                            oData.createEntry("/BOM_STAG", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[1].data.results.forEach(obj => {
+                            oData.createEntry("/BOM_OBJ_DEPEN", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[2].data.results.forEach(obj => {
+                            oData.createEntry("/ASS_COMP", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[3].data.results.forEach(obj => {
+                            oData.createEntry("/OBJ_DEPEN_MAS_DATA", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[4].data.results.forEach(obj => {
+                            oData.createEntry("/LOC_PRODID", {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        oData.submitChanges({
+                            success:function(odata)
+                            {
+                               console.log(odata)
+                               delete_bom()
+                            }
+                        })
+                    })
+                }
 
+                function delete_bom()
+                {
+                    bom_read()
+                    .then((data)=>{
+                                            
+                        data[0].data.results.forEach(obj => {
+                            oData.remove("/BOM_STAG_STB/"+obj.LOCATION_ID+"/"+obj.PRODUCT_ID+"/"+obj.ITEM_NUM+"/"+obj.COMPONENT, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[1].data.results.forEach(obj => {
+                            oData.remove("/BOM_OBJ_DEPEN_STB/"+obj.LOCATION_ID+"/"+obj.PRODUCT_ID+"/"+obj.ITEM_NUM+"/"+obj.COMPONENT+"/"+obj.DEPENDENCY, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[2].data.results.forEach(obj => {
+                            oData.remove("/ASS_COMP_STB/"+obj.LOCATION_ID+"/"+obj.ASSEMBLY+"/"+obj.SUB_COMP, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[3].data.results.forEach(obj => {
+                            oData.remove("/OBJ_DEPEN_MAS_DATA_STB/"+obj.OBJ_DEP+"/"+obj.OBJ_COUNTER+"/"+obj.CLASS_NUM+"/"+obj.CHAR_NUM+"/"+obj.CHAR_COUNTER+"/"+obj.CHARVAL_NUM, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                        data[4].data.results.forEach(obj => {
+                            oData.remove("/LOC_PRODID_STB/"+obj.LOCATION_ID+"/"+obj.PRODUCT_ID, {
+                                success: function () { },
+                                error: function () { }
+                            })
+                        })
+                    })
+                }
                 
             },
             part_prod_extract:function()
@@ -488,12 +588,42 @@ sap.ui.define([
                         })
                     })
                 }
-                
-                part_prod_read()
+                function create_part_prod() {
+                    part_prod_read()
 
-                .then((data)=>{
-                    console.log(data)
-                })
+                        .then((data) => {
+
+                            data[0].data.results.forEach(obj => {
+                                oData.createEntry("", {
+                                    success: function () { },
+                                    error: function () { }
+                                })
+                            })
+                            data[1].data.results.forEach(obj => {
+                                oData.createEntry("", {
+                                    success: function () { },
+                                    error: function () { }
+                                })
+                            })
+
+                            data[2].data.results.forEach(obj => {
+                                oData.createEntry("", {
+                                    success: function () { },
+                                    error: function () { }
+                                })
+                            })
+
+                            oData.submitChanges({
+                                success: function (data) {
+                                    console.log(data)
+                                },
+                                error: function () {
+                                    console.log(data)
+                                }
+                            })
+                        })
+
+                }
                 
             },
             dervied_extract:function()
